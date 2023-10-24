@@ -35,6 +35,14 @@ void makeMatrix(double** &matrix)
 		{
 			std::cout << "input value: ";
 			std::cin >> val;
+			while (std::cin.fail())
+			{
+				std::cout << "Input correct x: \n";
+				std::cin.clear();
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				std::cin >> val;
+
+			}
 			*vector = val;
 			++vector;
 		}
