@@ -1,0 +1,11 @@
+﻿  ConsoleApplication1.cpp
+D:\OOP\24-02-24\ConsoleApplication1\ConsoleApplication1.cpp(17,2): error C2679: бинарный "=": не найден оператор, принимающий правый операнд типа "myList" (или приемлемое преобразование отсутствует)
+  D:\OOP\24-02-24\ConsoleApplication1\Header.h(146,13):
+  может быть "myList &myList::operator =(myList)"
+  	D:\OOP\24-02-24\ConsoleApplication1\ConsoleApplication1.cpp(17,2):
+  	"myList &myList::operator =(myList)": невозможно преобразовать аргумент 2 из "myList" в "myList"
+  		D:\OOP\24-02-24\ConsoleApplication1\ConsoleApplication1.cpp(17,13):
+  		Создать class "myList" с помощью конструктора копий невозможно, так как конструкторы копий неоднозначны или отсутствуют
+  D:\OOP\24-02-24\ConsoleApplication1\ConsoleApplication1.cpp(17,2):
+  при попытке сопоставить список аргументов "(myList, myList)"
+  
