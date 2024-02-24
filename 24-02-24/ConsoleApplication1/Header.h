@@ -4,6 +4,7 @@
 #define HEADER_H
 
 #include <iostream>
+const unsigned int MAX_SIZE = 10;
 
 struct Node
 {
@@ -12,6 +13,12 @@ struct Node
 
     Node() {}
     Node(int _val) :val(_val), next(nullptr) {}
+
+    Node(Node& a)
+    {
+        this->val = a.val;
+        this->next = a.next;
+    }
 };
 
 class myList
@@ -20,7 +27,103 @@ private:
     Node* first = nullptr;
 
 public:
-    unsigned int MAX_SIZE = 10;
+    bool operator ==(const myList& b)
+    {
+        Node* arrow_a = this->first;
+        Node* arrow_b = b.first;
+
+        while (arrow_a && arrow_b)
+        {
+            if (arrow_a->val == arrow_b->val)
+            {
+                arrow_a = arrow_a->next;
+                arrow_b = arrow_b->next;
+            }
+            else
+                return false;
+        }
+        if (arrow_a || arrow_b)
+            return false;
+        else return true;
+
+    }
+
+    myList& operator =(const myList& b)
+    {
+        Node* arrow_;
+        Node* arrow1;
+
+        arrow_ = this->first; //a.first
+        arrow1 = b.first;
+
+        if (arrow_) // если есть элементы в "a"
+        {
+            while (arrow1->next && arrow_->next) //если в обоих есть элементы
+            {
+                arrow_->val = arrow1->val;
+
+                arrow_ = arrow_->next;
+                arrow1 = arrow1->next;
+            }
+
+            if (arrow_->next)       // если элементы "b" закончились
+            {
+                Node* nextNode = arrow_->next;
+                arrow_->next = nullptr;
+                arrow_->val = arrow1->val;
+
+                while (nextNode)
+                {
+                    Node* temp = nextNode;
+                    nextNode = nextNode->next;
+                    delete(temp);
+                }
+                
+            }
+
+            if (arrow1->next)      // если элементы "a" закончились
+            {
+                arrow_->val = arrow1->val;
+                arrow1 = arrow1->next;
+
+                while (arrow1)
+                {
+                    this->push(arrow1->val);
+                    arrow1 = arrow1->next;
+                }
+            }
+        }
+        else
+        {
+            while (arrow1)      // если нет элементов  в "a"
+            {
+                this->push(arrow1->val);
+                arrow1 = arrow1->next;
+            }
+        }
+
+
+        return *this;
+    }
+
+    size_t size()
+    {
+        int size = 0;
+        Node* arrow = this->first;
+
+        while (arrow)
+        {
+            ++size;
+            arrow = arrow->next;
+        }
+
+        return size;
+    }
+    
+    size_t  max_size()
+    {
+        return MAX_SIZE;
+    }
 
     bool empty()
     {
@@ -88,6 +191,9 @@ public:
             ++i;
             arrow = arrow->next;
         }
+
+        std::cout << '\n';
+
     }
 
     void delete_elements(int _val)
@@ -96,7 +202,7 @@ public:
         {
             Node* left = first;
             Node* arrow = left->next;
-            Node* memory;
+            Node* memory = nullptr;
 
             while (first && (first->val == _val))
             {
@@ -105,8 +211,7 @@ public:
                 delete(memory);
 
                 left = first;
-                if (left)
-                    arrow = left->next;
+                if (left) arrow = left->next;
             }
             while (arrow)
             {
@@ -116,14 +221,12 @@ public:
                     left->next = arrow->next;
                     delete(memory);
 
-                    if (left)
-                        arrow = left->next;
+                    if (left) arrow = left->next;
                 }
                 else
                 {
                     left = left->next;
-                    if (left)
-                        arrow = left->next;
+                    if (left) arrow = left->next;
                 }
             }
         }
@@ -143,43 +246,42 @@ public:
         first = nullptr;
     };
 
-    myList &operator =(myList b)
+    void swap(myList& b)
     {
-        Node* arrow = new Node();
-        Node* arrow1 = new Node();
-
-        arrow = this->first;
-        arrow1 = b.first;
-
-        while (arrow)
+        if (this->size() != b.size())
         {
-            if (arrow1 && arrow) //если в обоих есть элементы
+            Node* arrow_a = this->first;
+            Node* arrow_b = b.first;
+            myList temp;
+            temp = myList(b);
+            b = *this;
+            *this = temp;
+        }
+        else // if (a.size() == b.size)
+        {
+            Node* arrow_a = this->first;
+            Node* arrow_b = b.first;
+            int temp = 0;
+
+            while (arrow_a && arrow_b)
             {
-                if (arrow->val != arrow1->val)
-                    arrow->val = arrow1->val;
-                arrow = arrow->next;
-                arrow1 = arrow1->next;
-            }
-            while (arrow)       // если элементы "b" закончились
-            {
-                this->delete_elements(arrow->val);
-                arrow = arrow->next;
-            }
-            while (arrow1)      // если элементы "a" закончились
-            {
-                this->push(arrow1->val);
-                arrow1 = arrow1->next;
+                temp = arrow_a->val;
+                arrow_a->val = arrow_b->val;
+                arrow_b->val = temp;
+
+                arrow_a = arrow_a->next;
+                arrow_b = arrow_b->next;
             }
         }
-        
-        return *this;
     }
+
+    
 
     myList() {}
 
     myList(myList& l)
     {
-        Node* arrow = new Node();
+        Node* arrow;
         arrow = l.first;
 
         while (arrow)
@@ -190,10 +292,10 @@ public:
         }
     }
 
-    /*~myList()
+    ~myList()
     {
-        Node* arrow = first;
-        Node* memory = arrow;
+        Node* arrow = this->first;
+        Node* memory;
 
         while (arrow)
         {
@@ -201,8 +303,14 @@ public:
             arrow = arrow->next;
             delete(memory);
         }
-        first = nullptr;
-    }*/
+
+        this->first = nullptr;
+    }
 };
+
+void swap(myList& a, myList& b)
+{
+    a.swap(b);
+}
 
 #endif
